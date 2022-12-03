@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
-import { clearVercelDeployments } from './clean-deployment-history';
+import { clearDeploymentHistory } from './clean-deployment-history';
 
-dotenv.config();
+dotenv.config({ path: '.env' });
 
 const main = async () => {
-  await clearVercelDeployments();
+  await clearDeploymentHistory();
 };
 
 main();
