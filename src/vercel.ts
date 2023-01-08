@@ -1,9 +1,14 @@
 import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios';
-import { DeploymentDeleteResponse, GetDeploymentByIdResponse, ListDeploymentsResponse } from './type';
+import {
+  DeploymentDeleteResponse,
+  GetDeploymentByIdResponse,
+  ListDeploymentsResponse,
+} from './type';
 
 // https://vercel.com/docs/rest-api#introduction/api-basics
 
 export type VercelClientOptions = {
+  token?: string;
   projectId?: string;
   teamId?: string;
   axiosConfig?: Omit<CreateAxiosDefaults, 'baseURL'>;
@@ -17,19 +22,19 @@ export class VercelClient {
   private readonly _teamId?: string;
   private readonly _projectId?: string;
 
-  constructor(token: string, options?: VercelClientOptions) {
+  constructor(options: VercelClientOptions = {}) {
     options = { ...defaultOptions, ...options };
-    const { projectId, teamId, axiosConfig } = options;
+    const { token, projectId, teamId, axiosConfig } = options;
     const { headers, ...restAxiosConfig } = axiosConfig || {};
 
-    this._token = token;
-    this._projectId = projectId;
-    this._teamId = teamId;
+    this._token = token ?? process.env.VERCEL_API_TOKEN;
+    this._projectId = projectId ?? process.env.VERCEL_API_PROJECT_ID;
+    this._teamId = teamId ?? process.env.VERCEL_API_TEAM_ID;
 
     this.client = axios.create({
       baseURL: 'https://api.vercel.com',
       headers: {
-        ...headers,
+        ...((headers as any) ?? {}),
         Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
@@ -80,7 +85,13 @@ export class VercelClient {
 
   // https://vercel.com/docs/rest-api#endpoints/deployments/get-a-deployment-by-id-or-url
   // GET /v13/deployments/{idOrUrl}
-  private async getDeployment({ deploymentId, teamId = this.teamId }: { deploymentId: string; teamId?: string }) {
+  private async getDeployment({
+    deploymentId,
+    teamId = this.teamId,
+  }: {
+    deploymentId: string;
+    teamId?: string;
+  }) {
     const url = `/v13/deployments/${deploymentId}`;
     return this.client.get<GetDeploymentByIdResponse>(url, { params: { teamId } });
   }
@@ -141,7 +152,13 @@ export class VercelClient {
   // https://vercel.com/docs/rest-api#endpoints/projects/add-a-domain-to-a-project
   // vercel.project.addDomain
   // POST /v9/projects/{idOrName}/domains
-  private async addProjectDomain({ projectId, projectName }: { projectId?: string; projectName?: string }) {
+  private async addProjectDomain({
+    projectId,
+    projectName,
+  }: {
+    projectId?: string;
+    projectName?: string;
+  }) {
     const idOrName = projectId ?? projectName ?? this.projectId;
     const url = `/v9/projects/${idOrName}/domains`;
     return this.client.post(url, {});
@@ -158,7 +175,13 @@ export class VercelClient {
   // https://vercel.com/docs/rest-api#endpoints/projects/create-one-or-more-environment-variables
   // vercel.project.addEnvironmentVariable
   // POST /v9/projects/{idOrName}/env
-  private async addEnvironmentVariable({ projectId, projectName }: { projectId?: string; projectName?: string }) {
+  private async addEnvironmentVariable({
+    projectId,
+    projectName,
+  }: {
+    projectId?: string;
+    projectName?: string;
+  }) {
     const idOrName = projectId ?? projectName ?? this.projectId;
     const url = `/v9/projects/${idOrName}/env`;
     return this.client.post(url, {});
@@ -167,7 +190,13 @@ export class VercelClient {
   // https://vercel.com/docs/rest-api#endpoints/projects/delete-a-project
   // vercel.project.delete
   // DELETE /v9/projects/{idOrName}
-  private async deleteProject({ projectId, projectName }: { projectId?: string; projectName?: string }) {
+  private async deleteProject({
+    projectId,
+    projectName,
+  }: {
+    projectId?: string;
+    projectName?: string;
+  }) {
     const idOrName = projectId ?? projectName ?? this.projectId;
     const url = `/v9/projects/${idOrName}`;
     return this.client.delete(url, {});

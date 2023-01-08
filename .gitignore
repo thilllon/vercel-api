@@ -1,6 +1,6 @@
-dist
-**/node_modules
+**/!.env.example
 **/.env*
-.env*
-!.env.example
+**/node_modules
+dist
 yarn-error.log
+tmp
