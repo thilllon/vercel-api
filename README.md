@@ -9,3 +9,5 @@ Inspired by Octokit.js
   - no doubt that axios is great library.
   - other candidate options such as `got` and `request` are not supporting browser side fetch
   - `fetch` has poor support for type system
+
+# vercel-api

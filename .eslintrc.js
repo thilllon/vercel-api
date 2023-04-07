@@ -17,4 +17,5 @@ module.exports = {
     'no-mixed-spaces-and-tabs': 'off',
     'no-unexpected-multiline': 'off',
   },
+  ignorePatterns: ['dist'],
 };

@@ -1,0 +1,5 @@
+{
+  "*.{css,less,scss,html,json,jsx,js,ts,tsx,md,mdx,yaml,yml,tml,toml,xml}": ["prettier -w -l"],
+  "*.{js,jsx,ts,tsx}": "eslint --fix",
+  "**/src/**/*": ["prettier -w -l", "eslint --fix"]
+}
